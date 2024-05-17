@@ -3,31 +3,31 @@ class Game
 public:
 	Game() 
 		: score(0)
-		, pre_score(0)
-		, second_pre_score(0)
+		, pre_pin(0)
+		, second_pre_pin(0)
 		, throwing(0)
 		, frame(0) 
 	{
 	}
 
-	void Roll(int n) {
+	void Roll(int pin) {
 		if (frame < 10) {
-			score += n;
+			score += pin;
 		}
-		if(pre_score==10 || second_pre_score==10){
-			if (pre_score == 10 && frame < 11) {
-				score += n;
+		if(pre_pin==10 || second_pre_pin==10){
+			if (pre_pin == 10 && frame < 11) {
+				score += pin;
 			}
-			if (second_pre_score == 10 && frame < 12) {
-				score += n;
+			if (second_pre_pin == 10 && frame < 12) {
+				score += pin;
 			}
 		}
-		else if (pre_score + second_pre_score == 10) {
-			score += n;
+		else if (pre_pin + second_pre_pin == 10) {
+			score += pin;
 		}
-		second_pre_score = pre_score;
-		pre_score = n;
-		updateFrame(n);
+		second_pre_pin = pre_pin;
+		pre_pin = pin;
+		updateFrame(pin);
 	}
 
 	int Score() const {
@@ -35,9 +35,9 @@ public:
 	}
 
 private:
-	void updateFrame(int n) {
+	void updateFrame(int pin) {
 		if (throwing % 2 == 0) {
-			if (n == 10) {
+			if (pin == 10) {
 				throwing += 2;
 				++frame;
 				return;
@@ -50,8 +50,8 @@ private:
 	}
 
 	int score;
-	int pre_score;
-	int second_pre_score;
+	int pre_pin;
+	int second_pre_pin;
 	int throwing;
 	int frame;
 };
