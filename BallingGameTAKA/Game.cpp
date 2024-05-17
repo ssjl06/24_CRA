@@ -7,6 +7,9 @@ public:
 		if (pre + second_pre == 10) {
 			score += n;
 		}
+		else if (pre == 10 || second_pre == 10) {
+			score += n;
+		}
 		second_pre = pre;
 		pre = n;
 	}

@@ -29,7 +29,7 @@ TEST(GameTest, 스페어) {
 	EXPECT_EQ(16, game.Score());
 }
 
-TEST(GameTest, DISABLED_스트라이크) {
+TEST(GameTest, 스트라이크) {
 	Game game;
 	game.Roll(10); // strike
 	game.Roll(3);
