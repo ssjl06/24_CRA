@@ -33,3 +33,13 @@ TEST_F(SimilarityCheckFixture, alphaCheck3) {
 TEST_F(SimilarityCheckFixture, alphaCheck4) {
 	EXPECT_EQ(20, checker.getAlphaPoint("AA", "AAE"));
 }
+
+TEST_F(SimilarityCheckFixture, totalPoint)
+{
+	EXPECT_EQ(100, checker.getPoint("ASD", "DSA"));
+}
+
+TEST_F(SimilarityCheckFixture, totalPoint2)
+{
+	EXPECT_EQ(100, checker.getPoint("ABCDE", "ABCDE"));
+}

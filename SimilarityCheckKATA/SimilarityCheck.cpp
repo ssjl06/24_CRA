@@ -5,6 +5,9 @@
 class SimilarityChecker
 {
 public:
+	int getPoint(const std::string& str1, const std::string& str2) {
+		return getLengthPoint(str1, str2) + getAlphaPoint(str1, str2);
+	}
 	int getLengthPoint(const std::string& str1, const std::string& str2) {
 		auto length1 = static_cast<int>(str1.size());
 		auto length2 = static_cast<int>(str2.size());
