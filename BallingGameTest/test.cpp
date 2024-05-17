@@ -9,7 +9,7 @@ TEST(GameTest, ¸ðµÎ0Á¡È¹µæ) {
 	EXPECT_EQ(0, game.Score());
 }
 
-TEST(GameTest, DISABLED_°¢1Á¡¾¿È¹µæ) {
+TEST(GameTest, °¢1Á¡¾¿È¹µæ) {
 	Game game;
 	for (int i = 0; i < 20; ++i) {
 		game.Roll(1);
@@ -17,7 +17,7 @@ TEST(GameTest, DISABLED_°¢1Á¡¾¿È¹µæ) {
 	EXPECT_EQ(20, game.Score());
 }
 
-TEST(GameTest, DISABLED_½ºÆä¾î) {
+TEST(GameTest, ½ºÆä¾î) {
 	Game game;
 	game.Roll(5);
 	game.Roll(5); // spare
@@ -29,7 +29,7 @@ TEST(GameTest, DISABLED_½ºÆä¾î) {
 	EXPECT_EQ(16, game.Score());
 }
 
-TEST(GameTest, DISABLED_½ºÆ®¶óÀÌÅ©) {
+TEST(GameTest, ½ºÆ®¶óÀÌÅ©) {
 	Game game;
 	game.Roll(10); // strike
 	game.Roll(3);
@@ -41,7 +41,7 @@ TEST(GameTest, DISABLED_½ºÆ®¶óÀÌÅ©) {
 	EXPECT_EQ(24, game.Score());
 }
 
-TEST(GameTest, DISABLED_ÆÛÆåÆ®°ÔÀÓ) {
+TEST(GameTest, ÆÛÆåÆ®°ÔÀÓ) {
 	Game game;
 	for (int i = 0; i < 12; ++i) {
 		game.Roll(10);
@@ -50,7 +50,7 @@ TEST(GameTest, DISABLED_ÆÛÆåÆ®°ÔÀÓ) {
 	EXPECT_EQ(300, game.Score());
 }
 
-TEST(GameTest, DISABLED_»ùÇÃ°ÔÀÓ) {
+TEST(GameTest, »ùÇÃ°ÔÀÓ) {
 	Game game; 
 	game.Roll(1); 
 	game.Roll(4); 
