@@ -1,5 +1,6 @@
 #include <string>
 #include <cmath>
+#include <unordered_set>
 
 class SimilarityChecker
 {
@@ -13,6 +14,17 @@ public:
 	}
 
 	int getAlphaPoint(const std::string& str1, const std::string& str2) {
-		return 40;
+		std::unordered_set<char> total_set;
+		std::unordered_set<char> diff_set;
+		for (auto ch : str1) {
+			total_set.insert(ch);
+			diff_set.insert(ch);
+		}
+		for (auto ch : str2) {
+			total_set.insert(ch);
+			diff_set.erase(ch);
+		}
+		double same_cnt = total_set.size() - diff_set.size();
+		return (same_cnt/static_cast<double>(total_set.size())) * 40;
 	}
 };
