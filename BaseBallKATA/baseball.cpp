@@ -1,5 +1,6 @@
 #include <string>
 #include <stdexcept>
+#include <unordered_map>
 
 struct GuessResult {
 	bool solved;
@@ -10,17 +11,33 @@ struct GuessResult {
 class Baseball {
 public:
 	explicit Baseball(const std::string& question)
-		: question(question) {
-
+		: question(question) 
+	{
+		assertIllegalArgument(question);
+		for (int i = 0; i < question.size(); ++i) {
+			idx_map[question[i]] = i;
+		}
 	}
 
 	GuessResult guess(const std::string& guessNumber) {
 		assertIllegalArgument(guessNumber);
-		if (guessNumber == question) {
-			return { true, 3, 0 };
+		int strikes = 0;
+		int balls = 0;
+		bool solved = false;
+		for (int i = 0; i < guessNumber.size(); ++i) {
+			if (idx_map.count(guessNumber[i])&&idx_map[guessNumber[i]] == i) {
+				++strikes;
+			}
+			else if (idx_map.count(guessNumber[i]) != 0) {
+				++balls;
+			}
 		}
-		return { true, 3, 0 };
+		if (strikes == 3) {
+			solved = true;
+		}
+		return {  solved, strikes, balls };
 	}
+
 private:
 	void assertIllegalArgument(const std::string& guessNumber) {
 		if (guessNumber.length() != 3) {
@@ -45,4 +62,5 @@ private:
 	}
 private:
 	std::string question;
+	std::unordered_map<char, int> idx_map;
 };
