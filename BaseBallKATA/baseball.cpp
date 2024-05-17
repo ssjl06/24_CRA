@@ -21,21 +21,7 @@ public:
 
 	GuessResult guess(const std::string& guessNumber) {
 		assertIllegalArgument(guessNumber);
-		int strikes = 0;
-		int balls = 0;
-		bool solved = false;
-		for (int i = 0; i < guessNumber.size(); ++i) {
-			if (idx_map.count(guessNumber[i])&&idx_map[guessNumber[i]] == i) {
-				++strikes;
-			}
-			else if (idx_map.count(guessNumber[i]) != 0) {
-				++balls;
-			}
-		}
-		if (strikes == 3) {
-			solved = true;
-		}
-		return {  solved, strikes, balls };
+		return { getStrikes(guessNumber) == 3, getStrikes(guessNumber), getBalls(guessNumber) };
 	}
 
 private:
@@ -60,7 +46,25 @@ private:
 		}
 		return false;
 	}
-private:
+	int getStrikes(const std::string& guessNumber) {
+		int strikes = 0;
+		for (int i = 0; i < guessNumber.size(); ++i) {
+			if (idx_map.count(guessNumber[i]) != 0 && idx_map[guessNumber[i]] == i) {
+				++strikes;
+			}
+		}
+		return strikes;
+	}
+	int getBalls(const std::string& guessNumber) {
+		int balls = 0;
+		for (int i = 0; i < guessNumber.size(); ++i) {
+			if (idx_map.count(guessNumber[i]) != 0 && idx_map[guessNumber[i]] != i) {
+				++balls;
+			}
+		}
+		return balls;
+	}
+
 	std::string question;
 	std::unordered_map<char, int> idx_map;
 };
