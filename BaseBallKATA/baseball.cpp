@@ -1,9 +1,25 @@
 #include <string>
 #include <stdexcept>
+
+struct GuessResult {
+	bool solved;
+	int strikes;
+	int balls;
+};
+
 class Baseball {
 public:
-	void guess(const std::string& guessNumber) {
+	explicit Baseball(const std::string& question)
+		: question(question) {
+
+	}
+
+	GuessResult guess(const std::string& guessNumber) {
 		assertIllegalArgument(guessNumber);
+		if (guessNumber == question) {
+			return { true, 3, 0 };
+		}
+		return { true, 3, 0 };
 	}
 private:
 	void assertIllegalArgument(const std::string& guessNumber) {
@@ -27,4 +43,6 @@ private:
 		}
 		return false;
 	}
+private:
+	std::string question;
 };
