@@ -11,4 +11,8 @@ public:
 		auto shorter_one = std::min(length1, length2);
 		return (1 - (static_cast<double>(gap)/static_cast<double>(shorter_one))) * 60;
 	}
+
+	int getAlphaPoint(const std::string& str1, const std::string& str2) {
+		return 40;
+	}
 };

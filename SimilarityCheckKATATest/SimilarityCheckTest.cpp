@@ -18,3 +18,6 @@ TEST_F(SimilarityCheckFixture, lengthCheck3) {
 	EXPECT_EQ(20, checker.getLengthPoint("AAABB", "BAA"));
 }
 
+TEST_F(SimilarityCheckFixture, alphaCheck) {
+	EXPECT_EQ(40, checker.getAlphaPoint("ASD", "DSA"));
+}
