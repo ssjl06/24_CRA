@@ -5,6 +5,13 @@ VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BaseBallKATA", "BaseBallKATA\BaseBallKATA.vcxproj", "{D6F717DE-CF7F-4084-AE42-60C1363C1559}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BaseBallKATATest", "BaseBallKATATest\BaseBallKATATest.vcxproj", "{5A3A628F-A1C6-4402-8507-6F2A725FB3C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루션 항목", "{B7A363EC-BF86-4FF6-B6C4-23EC543B8EF1}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +28,14 @@ Global
 		{D6F717DE-CF7F-4084-AE42-60C1363C1559}.Release|x64.Build.0 = Release|x64
 		{D6F717DE-CF7F-4084-AE42-60C1363C1559}.Release|x86.ActiveCfg = Release|Win32
 		{D6F717DE-CF7F-4084-AE42-60C1363C1559}.Release|x86.Build.0 = Release|Win32
+		{5A3A628F-A1C6-4402-8507-6F2A725FB3C6}.Debug|x64.ActiveCfg = Debug|x64
+		{5A3A628F-A1C6-4402-8507-6F2A725FB3C6}.Debug|x64.Build.0 = Debug|x64
+		{5A3A628F-A1C6-4402-8507-6F2A725FB3C6}.Debug|x86.ActiveCfg = Debug|Win32
+		{5A3A628F-A1C6-4402-8507-6F2A725FB3C6}.Debug|x86.Build.0 = Debug|Win32
+		{5A3A628F-A1C6-4402-8507-6F2A725FB3C6}.Release|x64.ActiveCfg = Release|x64
+		{5A3A628F-A1C6-4402-8507-6F2A725FB3C6}.Release|x64.Build.0 = Release|x64
+		{5A3A628F-A1C6-4402-8507-6F2A725FB3C6}.Release|x86.ActiveCfg = Release|Win32
+		{5A3A628F-A1C6-4402-8507-6F2A725FB3C6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

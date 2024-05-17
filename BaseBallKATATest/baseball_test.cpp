@@ -1,7 +1,7 @@
 #include "pch.h"
+#include "../BaseBallKATA/baseball.cpp"
 
-TEST(BaseballGame, TryGameTest){
-	EXPECT_EQ(1, 1);
-	EXPECT_EQ(1, 1);
-	EXPECT_EQ(1, 1);
+TEST(BaseballGame, ThrowExceptionWhenInputLengthIsUnmatched){
+	Baseball game;
+	EXPECT_THROW(game.guess(std::string("12")), std::length_error);
 }
