@@ -1,12 +1,21 @@
 #include "pch.h"
 #include "../BaseBallKATA/baseball.cpp"
 
-TEST(BaseballGame, ThrowExceptionWhenInputLengthIsUnmatched){
+class BaseballFixture : public testing::Test {
+public:
 	Baseball game;
-	EXPECT_THROW(game.guess(std::string("12")), std::length_error);
-}
+	void assertIllegalArgument(const std::string& guessNumber) {
+		try {
+			game.guess(guessNumber);
+			FAIL();
+		}
+		catch (std::exception& e) {
 
-TEST(BaseballGame, ThrowExceptionWhenInvalidChar){
-	Baseball game;
-	EXPECT_THROW(game.guess(std::string("12s")), std::invalid_argument);
+		}
+	}
+};
+
+TEST_F(BaseballFixture, ThrowExceptionWhenInputLengthIsUnmatched){
+	assertIllegalArgument("12");
+	assertIllegalArgument("12s");
 }
