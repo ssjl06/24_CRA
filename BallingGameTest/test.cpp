@@ -17,7 +17,7 @@ TEST(GameTest, 각1점씩획득) {
 	EXPECT_EQ(20, game.Score());
 }
 
-TEST(GameTest, DISABLED_스페어) {
+TEST(GameTest, 스페어) {
 	Game game;
 	game.Roll(5);
 	game.Roll(5); // spare
