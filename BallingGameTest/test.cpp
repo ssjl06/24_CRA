@@ -41,7 +41,7 @@ TEST(GameTest, 스트라이크) {
 	EXPECT_EQ(24, game.Score());
 }
 
-TEST(GameTest, DISABLED_퍼펙트게임) {
+TEST(GameTest, 퍼펙트게임) {
 	Game game;
 	for (int i = 0; i < 12; ++i) {
 		game.Roll(10);
