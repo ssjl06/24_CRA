@@ -50,7 +50,7 @@ TEST(GameTest, 퍼펙트게임) {
 	EXPECT_EQ(300, game.Score());
 }
 
-TEST(GameTest, DISABLED_샘플게임) {
+TEST(GameTest, 샘플게임) {
 	Game game; 
 	game.Roll(1); 
 	game.Roll(4); 
