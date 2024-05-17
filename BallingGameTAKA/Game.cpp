@@ -14,16 +14,11 @@ public:
 		if (frame < 10) {
 			score += pin;
 		}
-		if(pre_pin==10 || second_pre_pin==10){
-			if (pre_pin == 10 && frame < 11) {
-				score += pin;
-			}
-			if (second_pre_pin == 10 && frame < 12) {
-				score += pin;
-			}
+		if(pre_pin == 10 || second_pre_pin == 10){
+			score += getBonusForStrike(pin);
 		}
 		else if (pre_pin + second_pre_pin == 10) {
-			score += pin;
+			score += getBonusForSpair(pin);
 		}
 		second_pre_pin = pre_pin;
 		pre_pin = pin;
@@ -47,6 +42,23 @@ private:
 		}
 		++throwing;
 		++frame;
+	}
+
+	int getBonusForStrike(int pin)
+	{
+		int bonus = 0;
+		if (pre_pin == 10 && frame < 11) {
+			bonus += pin;
+		}
+		if (second_pre_pin == 10 && frame < 12) {
+			bonus += pin;
+		}
+		return bonus;
+	}
+
+	int getBonusForSpair(int pin)
+	{
+		return pin;
 	}
 
 	int score;
