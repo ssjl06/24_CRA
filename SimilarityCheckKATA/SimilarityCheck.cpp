@@ -15,16 +15,23 @@ public:
 
 	int getAlphaPoint(const std::string& str1, const std::string& str2) {
 		std::unordered_set<char> total_set;
-		std::unordered_set<char> diff_set;
+		std::unordered_set<char> str1_set;
+		std::unordered_set<char> str2_set;
+
 		for (auto ch : str1) {
 			total_set.insert(ch);
-			diff_set.insert(ch);
+			str1_set.insert(ch);
 		}
 		for (auto ch : str2) {
 			total_set.insert(ch);
-			diff_set.erase(ch);
+			str2_set.insert(ch);
 		}
-		double same_cnt = total_set.size() - diff_set.size();
+		int same_cnt = 0;
+		for (auto ch : total_set) {
+			if (str1_set.count(ch) && str2_set.count(ch)) {
+				++same_cnt;
+			}
+		}
 		return (same_cnt/static_cast<double>(total_set.size())) * 40;
 	}
 };
