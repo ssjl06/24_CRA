@@ -9,7 +9,7 @@
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
-#pragma once
+ï»¿#pragma once
 #include &lt;ctime&gt;
 #include "Customer.cpp"
 
@@ -17,7 +17,7 @@ using std::time_t;
 
 class Schedule {
 public:
-	Schedule(tm dateTime, int numberOfPeople, Customer customer) :
+	Schedule(tm dateTime, int numberOfPeople, Customer&amp; customer) :
 <span style = "background-color:#dfd">		dateTime{ dateTime }, 
 		numberOfPeople{ numberOfPeople }, 
 		customer{ customer } {
@@ -31,14 +31,14 @@ public:
 		return numberOfPeople;
 	}</span>
 
-<span style = "background-color:#dfd">	Customer getCustomer() {
+<span style = "background-color:#dfd">	Customer&amp; getCustomer() {
 		return customer;
 	}</span>
 
 private:
 	tm dateTime;
 	int numberOfPeople;
-	Customer customer;
+	Customer&amp; customer;
 };</pre>
         <hr />
         <table width="100%">

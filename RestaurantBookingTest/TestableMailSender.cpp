@@ -1,16 +1,7 @@
 ﻿#include "../RestaurantBookingKATA/MailSender.cpp"
+#include <gmock/gmock.h>
 
 class TestableMailSender : public MailSender {
 public:
-	void sendMail(Schedule* schedule) override {
-		countSendMailMethodIsCalled++;
-	}
-
-	int getCountSendMailMethodIsCalled()
-	{
-		return countSendMailMethodIsCalled;
-	}
-
-private:
-	int countSendMailMethodIsCalled = 0;
+	MOCK_METHOD(void, sendMail, (Schedule*), (override));
 };

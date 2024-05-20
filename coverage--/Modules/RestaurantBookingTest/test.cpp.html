@@ -19,9 +19,12 @@
 #include "../RestaurantBookingKATA/SmsSender.cpp"
 #include "TestableSmsSender.cpp"
 #include "TestableMailSender.cpp"
-#include "SundayBookingScheduler.cpp"
-#include "MondayBookingScheduler.cpp"
 #include "TestableBookingScheduler.cpp"
+
+class MockCustomer : public Customer {
+public:
+<span style = "background-color:#dfd">	MOCK_METHOD(string, getEmail, (), (override));</span>
+};
 
 class BookingItem : public testing::Test {
 protected:
@@ -29,7 +32,14 @@ protected:
 		NOT_ON_THE_HOUR = getTime(2021, 3, 26, 9, 5);
 		ON_THE_HOUR = getTime(2021, 3, 26, 9, 0);
 		bookingScheduler.setSmsSender(&amp;testableSmsSender);
-		bookingScheduler.setMailSender(&amp;testableMailSender);
+		bookingScheduler.setMailSender(&amp;testableMailSender);</span>
+
+<span style = "background-color:#dfd">		EXPECT_CALL(CUSTOMER, getEmail, (), ())</span>
+			.WillRepeatedly(testing::Return(""));
+<span style = "background-color:#dfd">		EXPECT_CALL(CUSTOMER_WITH_MAIL, getEmail, (), ())</span>
+			.WillRepeatedly(testing::Return("test@test.com"));
+<span style = "background-color:#dfd">		MONDAY_ON_THE_HOUR = getTime(2024, 6, 3, 17, 0);
+		SUNDAY_ON_THE_HOUR = getTime(2021, 3, 28, 17, 0);
 	}</span>
 public:
 <span style = "background-color:#dfd">	tm getTime(int year, int mon, int day, int hour, int min) {
@@ -45,13 +55,15 @@ public:
 
 	tm NOT_ON_THE_HOUR;
 	tm ON_THE_HOUR;
-	Customer CUSTOMER{ "Fake name", "010-1234-5678" };
-	Customer CUSTOMER_WITH_MAIL{ "Fake Name", "010-1234-5678", "test@test.com" };
+	tm MONDAY_ON_THE_HOUR;
+	tm SUNDAY_ON_THE_HOUR;
+	MockCustomer CUSTOMER;
+	MockCustomer CUSTOMER_WITH_MAIL;
 	const int UNDER_CAPACITY = 1;
 	const int CAPACITY_PER_HOUR = 3;
 	BookingScheduler bookingScheduler{ CAPACITY_PER_HOUR };
-	TestableSmsSender testableSmsSender;
-	TestableMailSender testableMailSender;
+	testing::NiceMock&lt;TestableSmsSender&gt; testableSmsSender;
+	testing::NiceMock&lt;TestableMailSender&gt; testableMailSender;
 };
 
 <span style = "background-color:#dfd">TEST_F(BookingItem, ìì½ì_ì ììë§_ê°ë¥íë¤_ì ìê°_ìëê²½ì°_ìì½ë¶ê°) {
@@ -99,30 +111,36 @@ public:
 <span style = "background-color:#dfd">TEST_F(BookingItem, ìì½ìë£ì_SMSë_ë¬´ì¡°ê±´_ë°ì¡) {
 	Schedule* schedule = new Schedule(ON_THE_HOUR, CAPACITY_PER_HOUR, CUSTOMER);</span>
 
-<span style = "background-color:#dfd">	bookingScheduler.addSchedule(schedule);</span>
+<span style = "background-color:#dfd">	EXPECT_CALL(testableSmsSender, send(schedule))</span>
+		.Times(1);
 
-<span style = "background-color:#dfd">	EXPECT_EQ(true, testableSmsSender.isSendMethodCalled());
+<span style = "background-color:#dfd">	bookingScheduler.addSchedule(schedule);
 }</span>
 
 <span style = "background-color:#dfd">TEST_F(BookingItem, ì´ë©ì¼ì´_ìë_ê²½ì°ìë_ì´ë©ì¼_ë¯¸ë°ì¡) {
-	TestableMailSender testableMailSender;
 	Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER);</span>
 
+<span style = "background-color:#dfd">	EXPECT_CALL(testableMailSender, sendMail(schedule))</span>
+		.Times(0);
+
 <span style = "background-color:#dfd">	bookingScheduler.addSchedule(schedule);
-	EXPECT_EQ(0, testableMailSender.getCountSendMailMethodIsCalled());
 }</span>
 
 <span style = "background-color:#dfd">TEST_F(BookingItem, ì´ë©ì¼ì´_ìë_ê²½ì°ìë_ì´ë©ì¼_ë°ì¡) {
 	Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL);
 	bookingScheduler.setMailSender(&amp;testableMailSender);</span>
 
+<span style = "background-color:#dfd">	EXPECT_CALL(testableMailSender, sendMail(schedule))</span>
+		.Times(1);
+
 <span style = "background-color:#dfd">	bookingScheduler.addSchedule(schedule);
-	EXPECT_EQ(1, testableMailSender.getCountSendMailMethodIsCalled());
 }</span>
 
 <span style = "background-color:#dfd">TEST_F(BookingItem, íì¬ë ì§ê°_ì¼ìì¼ì¸_ê²½ì°_ìì½ë¶ê°_ìì¸ì²ë¦¬) {
-	tm sundayTime = getTime(2021, 3, 28, 17, 0);
-	BookingScheduler* bookingScheduler = new TestableBookingScheduler(CAPACITY_PER_HOUR, sundayTime);</span>
+	TestableBookingScheduler mockScheduler(CAPACITY_PER_HOUR);
+	EXPECT_CALL(mockScheduler, getNow())</span>
+		.WillRepeatedly(testing::Return(mktime(&amp;SUNDAY_ON_THE_HOUR)));
+<span style = "background-color:#dfd">	BookingScheduler* bookingScheduler = &amp;mockScheduler;</span>
 	try {
 <span style = "background-color:#dfd">		Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL);
 		bookingScheduler-&gt;addSchedule(schedule);</span>
@@ -134,9 +152,13 @@ public:
 }</span>
 
 <span style = "background-color:#dfd">TEST_F(BookingItem, íì¬ë ì§ê°_ì¼ìì¼ì´_ìëê²½ì°_ìì½ê°ë¥) {
-	tm sundayTime = getTime(2024, 6, 3, 17, 0);
-	BookingScheduler* bookingScheduler = new TestableBookingScheduler(CAPACITY_PER_HOUR, sundayTime);
-	Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL);
+	TestableBookingScheduler mockScheduler(CAPACITY_PER_HOUR);
+	EXPECT_CALL(mockScheduler, getNow())</span>
+		.WillRepeatedly(testing::Return(mktime(&amp;MONDAY_ON_THE_HOUR)));
+
+<span style = "background-color:#dfd">	BookingScheduler* bookingScheduler = &amp;mockScheduler;</span>
+
+<span style = "background-color:#dfd">	Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL);
 	bookingScheduler-&gt;addSchedule(schedule);
 	EXPECT_EQ(true, bookingScheduler-&gt;hasSchedule(schedule));
 }</span></pre>

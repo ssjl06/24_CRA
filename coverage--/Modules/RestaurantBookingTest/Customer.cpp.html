@@ -9,7 +9,7 @@
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
-#pragma once
+ï»¿#pragma once
 #include &lt;string&gt;
 
 using std::string;
@@ -17,17 +17,19 @@ using std::string;
 class Customer {
 public:
 	Customer(string name, string phoneNumber) : 
-<span style = "background-color:#dfd">		name{ name }, 
+		name{ name }, 
 		phoneNumber{ phoneNumber } {
-	}</span>
+	}
 
 	Customer(string name, string phoneNumber, string email) :
-<span style = "background-color:#dfd">		name{ name }, 
+		name{ name }, 
 		phoneNumber{ phoneNumber }, 
 		email{ email } {
-	}</span>
+	}
 
-<span style = "background-color:#dfd">	string getEmail() {
+<span style = "background-color:#dfd">	Customer() = default;</span>
+
+<span style = "background-color:#fdd">	virtual string getEmail() {
 		return email;
 	}</span>
 

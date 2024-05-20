@@ -5478,7 +5478,7 @@ const TestCase* UnitTest::current_test_case() const
 // Returns the TestInfo object for the test that's currently running,
 // or NULL if no test is running.
 const TestInfo* UnitTest::current_test_info() const
-<span style = "background-color:#fdd">    GTEST_LOCK_EXCLUDED_(mutex_) {
+<span style = "background-color:#dfd">    GTEST_LOCK_EXCLUDED_(mutex_) {
   internal::MutexLock lock(&amp;mutex_);
   return impl_-&gt;current_test_info();
 }</span>

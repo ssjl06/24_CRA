@@ -548,25 +548,25 @@ class ThreadLocalRegistryImpl {
   // Registers thread_local_instance as having value on the current thread.
   // Returns a value that can be used to identify the thread from other threads.
   static ThreadLocalValueHolderBase* GetValueOnCurrentThread(
-<span style = "background-color:#fdd">      const ThreadLocalBase* thread_local_instance) {</span>
+<span style = "background-color:#dfd">      const ThreadLocalBase* thread_local_instance) {</span>
 #ifdef _MSC_VER
-<span style = "background-color:#fdd">    MemoryIsNotDeallocated memory_is_not_deallocated;</span>
+<span style = "background-color:#dfd">    MemoryIsNotDeallocated memory_is_not_deallocated;</span>
 #endif  // _MSC_VER
-<span style = "background-color:#fdd">    DWORD current_thread = ::GetCurrentThreadId();
+<span style = "background-color:#dfd">    DWORD current_thread = ::GetCurrentThreadId();
     MutexLock lock(&amp;mutex_);
     ThreadIdToThreadLocals* const thread_to_thread_locals =</span>
         GetThreadLocalsMapLocked();
-<span style = "background-color:#fdd">    ThreadIdToThreadLocals::iterator thread_local_pos =</span>
+<span style = "background-color:#dfd">    ThreadIdToThreadLocals::iterator thread_local_pos =</span>
         thread_to_thread_locals-&gt;find(current_thread);
-<span style = "background-color:#fdd">    if (thread_local_pos == thread_to_thread_locals-&gt;end()) {
+<span style = "background-color:#dfd">    if (thread_local_pos == thread_to_thread_locals-&gt;end()) {
       thread_local_pos = thread_to_thread_locals-&gt;insert(</span>
           std::make_pair(current_thread, ThreadLocalValues())).first;
-<span style = "background-color:#fdd">      StartWatcherThreadFor(current_thread);</span>
+<span style = "background-color:#dfd">      StartWatcherThreadFor(current_thread);</span>
     }
-<span style = "background-color:#fdd">    ThreadLocalValues&amp; thread_local_values = thread_local_pos-&gt;second;
+<span style = "background-color:#dfd">    ThreadLocalValues&amp; thread_local_values = thread_local_pos-&gt;second;
     ThreadLocalValues::iterator value_pos =</span>
         thread_local_values.find(thread_local_instance);
-<span style = "background-color:#fdd">    if (value_pos == thread_local_values.end()) {
+<span style = "background-color:#dfd">    if (value_pos == thread_local_values.end()) {
       value_pos =</span>
           thread_local_values
               .insert(std::make_pair(
@@ -575,7 +575,7 @@ class ThreadLocalRegistryImpl {
                       thread_local_instance-&gt;NewValueForCurrentThread())))
               .first;
     }
-<span style = "background-color:#fdd">    return value_pos-&gt;second.get();
+<span style = "background-color:#dfd">    return value_pos-&gt;second.get();
   }</span>
 
   static void OnThreadLocalDestroyed(
@@ -589,19 +589,19 @@ class ThreadLocalRegistryImpl {
           GetThreadLocalsMapLocked();
 <span style = "background-color:#dfd">      for (ThreadIdToThreadLocals::iterator it =</span>
           thread_to_thread_locals-&gt;begin();
-<span style = "background-color:#dfd">          it != thread_to_thread_locals-&gt;end();</span>
-<span style = "background-color:#fdd">          ++it) {
+<span style = "background-color:#dfd">          it != thread_to_thread_locals-&gt;end();
+          ++it) {
         ThreadLocalValues&amp; thread_local_values = it-&gt;second;
         ThreadLocalValues::iterator value_pos =</span>
             thread_local_values.find(thread_local_instance);
-<span style = "background-color:#fdd">        if (value_pos != thread_local_values.end()) {
+<span style = "background-color:#dfd">        if (value_pos != thread_local_values.end()) {
           value_holders.push_back(value_pos-&gt;second);
           thread_local_values.erase(value_pos);</span>
           // This 'if' can only be successful at most once, so theoretically we
           // could break out of the loop here, but we don't bother doing so.
         }
-<span style = "background-color:#fdd">      }</span>
-<span style = "background-color:#dfd">    }</span>
+<span style = "background-color:#dfd">      }
+    }</span>
     // Outside the lock, let the destructor for 'value_holders' deallocate the
     // ThreadLocalValueHolderBases.
 <span style = "background-color:#dfd">  }</span>
@@ -645,37 +645,37 @@ class ThreadLocalRegistryImpl {
   // StartWatcherThreadFor to WatcherThreadFunc.
   typedef std::pair&lt;DWORD, HANDLE&gt; ThreadIdAndHandle;
 
-<span style = "background-color:#fdd">  static void StartWatcherThreadFor(DWORD thread_id) {</span>
+<span style = "background-color:#dfd">  static void StartWatcherThreadFor(DWORD thread_id) {</span>
     // The returned handle will be kept in thread_map and closed by
     // watcher_thread in WatcherThreadFunc.
-<span style = "background-color:#fdd">    HANDLE thread = ::OpenThread(SYNCHRONIZE | THREAD_QUERY_INFORMATION,</span>
+<span style = "background-color:#dfd">    HANDLE thread = ::OpenThread(SYNCHRONIZE | THREAD_QUERY_INFORMATION,</span>
                                  FALSE,
                                  thread_id);
-<span style = "background-color:#fdd">    GTEST_CHECK_(thread != nullptr);</span>
+<span style = "background-color:#dfd">    GTEST_CHECK_(thread != nullptr);</span>
     // We need to pass a valid thread ID pointer into CreateThread for it
     // to work correctly under Win98.
     DWORD watcher_thread_id;
-<span style = "background-color:#fdd">    HANDLE watcher_thread = ::CreateThread(</span>
+<span style = "background-color:#dfd">    HANDLE watcher_thread = ::CreateThread(</span>
         nullptr,  // Default security.
         0,        // Default stack size
         &amp;ThreadLocalRegistryImpl::WatcherThreadFunc,
         reinterpret_cast&lt;LPVOID&gt;(new ThreadIdAndHandle(thread_id, thread)),
         CREATE_SUSPENDED, &amp;watcher_thread_id);
-<span style = "background-color:#fdd">    GTEST_CHECK_(watcher_thread != nullptr);</span>
+<span style = "background-color:#dfd">    GTEST_CHECK_(watcher_thread != nullptr);</span>
     // Give the watcher thread the same priority as ours to avoid being
     // blocked by it.
-<span style = "background-color:#fdd">    ::SetThreadPriority(watcher_thread,</span>
+<span style = "background-color:#dfd">    ::SetThreadPriority(watcher_thread,</span>
                         ::GetThreadPriority(::GetCurrentThread()));
-<span style = "background-color:#fdd">    ::ResumeThread(watcher_thread);
+<span style = "background-color:#dfd">    ::ResumeThread(watcher_thread);
     ::CloseHandle(watcher_thread);
   }</span>
 
   // Monitors exit from a given thread and notifies those
   // ThreadIdToThreadLocals about thread termination.
-<span style = "background-color:#fdd">  static DWORD WINAPI WatcherThreadFunc(LPVOID param) {
+<span style = "background-color:#dfd">  static DWORD WINAPI WatcherThreadFunc(LPVOID param) {
     const ThreadIdAndHandle* tah =</span>
         reinterpret_cast&lt;const ThreadIdAndHandle*&gt;(param);
-<span style = "background-color:#fdd">    GTEST_CHECK_(</span>
+<span style = "background-color:#dfd">    GTEST_CHECK_(</span>
         ::WaitForSingleObject(tah-&gt;second, INFINITE) == WAIT_OBJECT_0);
 <span style = "background-color:#fdd">    OnThreadExit(tah-&gt;first);
     ::CloseHandle(tah-&gt;second);
@@ -703,10 +703,10 @@ class ThreadLocalRegistryImpl {
 Mutex ThreadLocalRegistryImpl::thread_map_mutex_(Mutex::kStaticMutex);  // NOLINT</span>
 
 ThreadLocalValueHolderBase* ThreadLocalRegistry::GetValueOnCurrentThread(
-<span style = "background-color:#fdd">      const ThreadLocalBase* thread_local_instance) {
+<span style = "background-color:#dfd">      const ThreadLocalBase* thread_local_instance) {
   return ThreadLocalRegistryImpl::GetValueOnCurrentThread(</span>
       thread_local_instance);
-<span style = "background-color:#fdd">}</span>
+<span style = "background-color:#dfd">}</span>
 
 void ThreadLocalRegistry::OnThreadLocalDestroyed(
 <span style = "background-color:#dfd">      const ThreadLocalBase* thread_local_instance) {
@@ -1031,18 +1031,18 @@ const char kUnknownFile[] = "unknown file";
 
 // Formats a source file path and a line number as they would appear
 // in an error message from the compiler used to compile this code.
-<span style = "background-color:#fdd">GTEST_API_ ::std::string FormatFileLocation(const char* file, int line) {
+<span style = "background-color:#dfd">GTEST_API_ ::std::string FormatFileLocation(const char* file, int line) {
   const std::string file_name(file == nullptr ? kUnknownFile : file);</span>
 
-<span style = "background-color:#fdd">  if (line &lt; 0) {
-    return file_name + ":";</span>
+<span style = "background-color:#dfd">  if (line &lt; 0) {</span>
+<span style = "background-color:#fdd">    return file_name + ":";</span>
   }
 #ifdef _MSC_VER
-<span style = "background-color:#fdd">  return file_name + "(" + StreamableToString(line) + "):";</span>
+<span style = "background-color:#dfd">  return file_name + "(" + StreamableToString(line) + "):";</span>
 #else
   return file_name + ":" + StreamableToString(line) + ":";
 #endif  // _MSC_VER
-<span style = "background-color:#fdd">}</span>
+<span style = "background-color:#dfd">}</span>
 
 // Formats a file location for compiler-independent XML output.
 // Although this function is not platform dependent, we put it next to
