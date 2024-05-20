@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>test.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+ï»¿#include &lt;gtest/gtest.h&gt;
+#include &lt;gmock/gmock.h&gt;
+
+#include "../RestaurantBookingKATA/BookingScheduler.cpp"
+#include "../RestaurantBookingKATA/Customer.cpp"
+#include "../RestaurantBookingKATA/MailSender.cpp"
+#include "../RestaurantBookingKATA/Schedule.cpp"
+#include "../RestaurantBookingKATA/SmsSender.cpp"
+#include "TestableSmsSender.cpp"
+#include "TestableMailSender.cpp"
+#include "SundayBookingScheduler.cpp"
+#include "MondayBookingScheduler.cpp"
+#include "TestableBookingScheduler.cpp"
+
+class BookingItem : public testing::Test {
+protected:
+<span style = "background-color:#dfd">	void SetUp() override {
+		NOT_ON_THE_HOUR = getTime(2021, 3, 26, 9, 5);
+		ON_THE_HOUR = getTime(2021, 3, 26, 9, 0);
+		bookingScheduler.setSmsSender(&amp;testableSmsSender);
+		bookingScheduler.setMailSender(&amp;testableMailSender);
+	}</span>
+public:
+<span style = "background-color:#dfd">	tm getTime(int year, int mon, int day, int hour, int min) {
+		tm result = { 0, min, hour, day, mon - 1, year - 1900, 0,0,-1 };
+		mktime(&amp;result);
+		return result;
+	}
+	tm plusHour(tm base, int hour) {
+		base.tm_hour += hour;
+		mktime(&amp;base);
+		return base;
+	}</span>
+
+	tm NOT_ON_THE_HOUR;
+	tm ON_THE_HOUR;
+	Customer CUSTOMER{ "Fake name", "010-1234-5678" };
+	Customer CUSTOMER_WITH_MAIL{ "Fake Name", "010-1234-5678", "test@test.com" };
+	const int UNDER_CAPACITY = 1;
+	const int CAPACITY_PER_HOUR = 3;
+	BookingScheduler bookingScheduler{ CAPACITY_PER_HOUR };
+	TestableSmsSender testableSmsSender;
+	TestableMailSender testableMailSender;
+};
+
+<span style = "background-color:#dfd">TEST_F(BookingItem, ìì½ì_ì ììë§_ê°ë¥íë¤_ì ìê°_ìëê²½ì°_ìì½ë¶ê°) {
+	Schedule* schedule = new Schedule(NOT_ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER);</span>
+
+<span style = "background-color:#dfd">	EXPECT_THROW({</span>
+		bookingScheduler.addSchedule(schedule);
+		}, std::runtime_error);
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">TEST_F(BookingItem, ìì½ì_ì ììë§_ê°ë¥íë¤_ì ìì¸_ê²½ì°_ìì½ê°ë¥) {
+	Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER);</span>
+
+<span style = "background-color:#dfd">	bookingScheduler.addSchedule(schedule);</span>
+	
+<span style = "background-color:#dfd">	EXPECT_EQ(true, bookingScheduler.hasSchedule(schedule));
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(BookingItem, ìê°ëë³_ì¸ìì íì´_ìë¤_ê°ì_ìê°ëì_Capacity_ì´ê³¼í _ê²½ì°_ìì¸ë°ì) {
+	Schedule* schedule = new Schedule(ON_THE_HOUR, CAPACITY_PER_HOUR, CUSTOMER);</span>
+
+<span style = "background-color:#dfd">	bookingScheduler.addSchedule(schedule);</span>
+	try {
+<span style = "background-color:#dfd">		Schedule* newSchedule = new Schedule{ ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER };
+		bookingScheduler.addSchedule(newSchedule);</span>
+<span style = "background-color:#fdd">		FAIL();</span>
+	}
+<span style = "background-color:#dfd">	catch (std::runtime_error&amp; e) {
+		EXPECT_EQ(std::string{ e.what() }, std::string{ "Number of people is over restaurant capacity per hour" });
+	}
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(BookingItem, ìê°ëë³_ì¸ìì íì´_ìë¤_ê°ì_ìê°ëê°_ë¤ë¥´ë©´_Capacity_ì°¨ìì´ë_ì¤ì¼ì¥´_ì¶ê°_ì±ê³µ) {
+	Schedule* schedule = new Schedule(ON_THE_HOUR, CAPACITY_PER_HOUR, CUSTOMER);
+	bookingScheduler.addSchedule(schedule);</span>
+
+<span style = "background-color:#dfd">	tm differentHour = plusHour(ON_THE_HOUR, 1);
+	Schedule* newSchedule = new Schedule{ differentHour, UNDER_CAPACITY, CUSTOMER };
+	bookingScheduler.addSchedule(newSchedule);</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(true, bookingScheduler.hasSchedule(schedule));
+	EXPECT_EQ(true, bookingScheduler.hasSchedule(newSchedule));
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(BookingItem, ìì½ìë£ì_SMSë_ë¬´ì¡°ê±´_ë°ì¡) {
+	Schedule* schedule = new Schedule(ON_THE_HOUR, CAPACITY_PER_HOUR, CUSTOMER);</span>
+
+<span style = "background-color:#dfd">	bookingScheduler.addSchedule(schedule);</span>
+
+<span style = "background-color:#dfd">	EXPECT_EQ(true, testableSmsSender.isSendMethodCalled());
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(BookingItem, ì´ë©ì¼ì´_ìë_ê²½ì°ìë_ì´ë©ì¼_ë¯¸ë°ì¡) {
+	TestableMailSender testableMailSender;
+	Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER);</span>
+
+<span style = "background-color:#dfd">	bookingScheduler.addSchedule(schedule);
+	EXPECT_EQ(0, testableMailSender.getCountSendMailMethodIsCalled());
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(BookingItem, ì´ë©ì¼ì´_ìë_ê²½ì°ìë_ì´ë©ì¼_ë°ì¡) {
+	Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL);
+	bookingScheduler.setMailSender(&amp;testableMailSender);</span>
+
+<span style = "background-color:#dfd">	bookingScheduler.addSchedule(schedule);
+	EXPECT_EQ(1, testableMailSender.getCountSendMailMethodIsCalled());
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(BookingItem, íì¬ë ì§ê°_ì¼ìì¼ì¸_ê²½ì°_ìì½ë¶ê°_ìì¸ì²ë¦¬) {
+	tm sundayTime = getTime(2021, 3, 28, 17, 0);
+	BookingScheduler* bookingScheduler = new TestableBookingScheduler(CAPACITY_PER_HOUR, sundayTime);</span>
+	try {
+<span style = "background-color:#dfd">		Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL);
+		bookingScheduler-&gt;addSchedule(schedule);</span>
+<span style = "background-color:#fdd">		FAIL();</span>
+	}
+<span style = "background-color:#dfd">	catch (std::runtime_error&amp; e) {
+		EXPECT_EQ(std::string{ e.what() }, std::string("Booking system is not available on sunday"));
+	}
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(BookingItem, íì¬ë ì§ê°_ì¼ìì¼ì´_ìëê²½ì°_ìì½ê°ë¥) {
+	tm sundayTime = getTime(2024, 6, 3, 17, 0);
+	BookingScheduler* bookingScheduler = new TestableBookingScheduler(CAPACITY_PER_HOUR, sundayTime);
+	Schedule* schedule = new Schedule(ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL);
+	bookingScheduler-&gt;addSchedule(schedule);
+	EXPECT_EQ(true, bookingScheduler-&gt;hasSchedule(schedule));
+}</span></pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
