@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <string>
 
 using std::string;
@@ -16,7 +16,9 @@ public:
 		email{ email } {
 	}
 
-	string getEmail() {
+	Customer() = default;
+
+	virtual string getEmail() {
 		return email;
 	}
 

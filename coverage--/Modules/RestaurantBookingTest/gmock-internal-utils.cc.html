@@ -136,19 +136,19 @@ class GoogleTestFailureReporter : public FailureReporterInterface {
 
 // Returns true if and only if a log with the given severity is visible
 // according to the --gmock_verbose flag.
-<span style = "background-color:#fdd">GTEST_API_ bool LogIsVisible(LogSeverity severity) {
+<span style = "background-color:#dfd">GTEST_API_ bool LogIsVisible(LogSeverity severity) {
   if (GMOCK_FLAG(verbose) == kInfoVerbosity) {</span>
     // Always show the log if --gmock_verbose=info.
-<span style = "background-color:#fdd">    return true;
-  } else if (GMOCK_FLAG(verbose) == kErrorVerbosity) {</span>
+<span style = "background-color:#fdd">    return true;</span>
+<span style = "background-color:#dfd">  } else if (GMOCK_FLAG(verbose) == kErrorVerbosity) {</span>
     // Always hide it if --gmock_verbose=error.
 <span style = "background-color:#fdd">    return false;
   } else {</span>
     // If --gmock_verbose is neither "info" nor "error", we treat it
     // as "warning" (its default value).
-<span style = "background-color:#fdd">    return severity == kWarning;</span>
+<span style = "background-color:#dfd">    return severity == kWarning;</span>
   }
-<span style = "background-color:#fdd">}</span>
+<span style = "background-color:#dfd">}</span>
 
 // Prints the given message to stdout if and only if 'severity' &gt;= the level
 // specified by the --gmock_verbose flag.  If stack_frames_to_skip &gt;=
@@ -158,7 +158,7 @@ class GoogleTestFailureReporter : public FailureReporterInterface {
 // function calls will be inlined by the compiler and need to be
 // conservative.
 GTEST_API_ void Log(LogSeverity severity, const std::string&amp; message,
-<span style = "background-color:#fdd">                    int stack_frames_to_skip) {
+<span style = "background-color:#dfd">                    int stack_frames_to_skip) {
   if (!LogIsVisible(severity))
     return;</span>
 
@@ -195,7 +195,7 @@ GTEST_API_ void Log(LogSeverity severity, const std::string&amp; message,
 <span style = "background-color:#fdd">  std::cout &lt;&lt; ::std::flush;
 }</span>
 
-<span style = "background-color:#fdd">GTEST_API_ WithoutMatchers GetWithoutMatchers() { return WithoutMatchers(); }</span>
+<span style = "background-color:#dfd">GTEST_API_ WithoutMatchers GetWithoutMatchers() { return WithoutMatchers(); }</span>
 
 <span style = "background-color:#fdd">GTEST_API_ void IllegalDoDefault(const char* file, int line) {
   internal::Assert(</span>
