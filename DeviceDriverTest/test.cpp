@@ -1,6 +1,7 @@
-#include "gtest/gtest.h"
+﻿#include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "DeviceDriver.h"
+#include "Application.h"
 
 class MockFlashMemoryDeivce : public FlashMemoryDevice 
 {
@@ -83,4 +84,118 @@ TEST(DeviceWrite, Write) {
     DeviceDriver driver(&flash_device);
     driver.write(0, 5);
     EXPECT_THAT(driver.read(0), 5);
+}
+
+TEST(Application, ReadAndPrint) {
+    testing::NiceMock<MockFlashMemoryDeivce> flash_device;
+    EXPECT_CALL(flash_device, read)
+        .Times(20)
+        .WillOnce(testing::Return((unsigned char)5))
+        .WillOnce(testing::Return((unsigned char)5))
+        .WillOnce(testing::Return((unsigned char)5))
+        .WillOnce(testing::Return((unsigned char)5))
+        .WillOnce(testing::Return((unsigned char)5))
+        .WillOnce(testing::Return((unsigned char)7))
+        .WillOnce(testing::Return((unsigned char)7))
+        .WillOnce(testing::Return((unsigned char)7))
+        .WillOnce(testing::Return((unsigned char)7))
+        .WillOnce(testing::Return((unsigned char)7))
+        .WillOnce(testing::Return((unsigned char)2))
+        .WillOnce(testing::Return((unsigned char)2))
+        .WillOnce(testing::Return((unsigned char)2))
+        .WillOnce(testing::Return((unsigned char)2))
+        .WillOnce(testing::Return((unsigned char)2))
+        .WillOnce(testing::Return((unsigned char)178))
+        .WillOnce(testing::Return((unsigned char)178))
+        .WillOnce(testing::Return((unsigned char)178))
+        .WillOnce(testing::Return((unsigned char)178))
+        .WillOnce(testing::Return((unsigned char)178))
+        ;
+    DeviceDriver driver(&flash_device);
+    Application app(driver);
+
+    std::streambuf* oldCoutStreamBuf = std::cout.rdbuf();
+    std::ostringstream strCout;
+    std::cout.rdbuf( strCout.rdbuf() );
+
+    app.ReadAndPrint(0, 3);
+
+    std::cout.rdbuf( oldCoutStreamBuf );
+
+    std::string expected = "5\n7\n2\n178\n";
+    EXPECT_THAT(strCout.str(), testing::Eq(expected));
+}
+
+TEST(Application, WriteAll) {
+    testing::NiceMock<MockFlashMemoryDeivce> flash_device;
+    EXPECT_CALL(flash_device, read)
+        .Times(50)
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+        .WillOnce(testing::Return(0XFF))
+
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        .WillOnce(testing::Return(89))
+        ;
+
+    DeviceDriver driver(&flash_device);
+    Application app(driver);
+
+    app.WriteAll(89);
+
+    std::streambuf* oldCoutStreamBuf = std::cout.rdbuf();
+    std::ostringstream strCout;
+    std::cout.rdbuf( strCout.rdbuf() );
+
+    app.ReadAndPrint(0X00, 0X04);
+
+    std::cout.rdbuf( oldCoutStreamBuf );
+
+    std::string expected = "89\n89\n89\n89\n89\n";
+    EXPECT_THAT(strCout.str(), testing::Eq(expected));
 }
